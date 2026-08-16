@@ -337,7 +337,7 @@ function renderQuestion(i) {
 
 function finishChoices() {
   choiceQ.textContent = '🏆 Selesai!';
-  choiceFb.textContent = 'Selamat! Kamu resmi lulus jadi teman yang paling seru. 🎓';
+  choiceFb.textContent = 'Selamat! Kamu resmi lulus jadi orang  yang paling seru. 🎓';
   choiceGrid.innerHTML = '';
   const again = document.createElement('button');
   again.type = 'button';
