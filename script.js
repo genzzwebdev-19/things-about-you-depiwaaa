@@ -434,27 +434,46 @@ const Music = (() => {
   }
 
   function start() {
+    if (playing) return true;
     if (CONFIG.musicFile && !fileBroken) {
       if (!audio) {
         audio = new Audio(CONFIG.musicFile);
         audio.loop = true;
         audio.volume = 0.75;
         audio.addEventListener('error', () => {
+          // File rusak / nggak ada → pakai melodi bawaan
           fileBroken = true;
-          startSynth(); // file nggak ada → pakai melodi bawaan
+          if (!playing) startSynth();
         }, { once: true });
       }
       const p = audio.play();
       if (p && typeof p.catch === 'function') {
-        p.catch(() => {
+        p.then(() => {
+          playing = true;
+        }).catch((err) => {
+          if (err && err.name === 'NotAllowedError') {
+            // Autoplay diblokir browser (belum ada gestur user).
+            // Jangan tandai file rusak — nanti dicoba ulang saat user klik.
+            return;
+          }
+          // File gagal dimuat → fallback ke melodi WebAudio
           fileBroken = true;
-          startSynth();
+          if (!playing) startSynth();
         });
+      } else {
+        playing = true;
       }
-      playing = true;
       return true;
     }
     return startSynth();
+  }
+
+  // Benar-benar bersuara sekarang? (file lagi jalan / synth lagi jalan)
+  function isReallyPlaying() {
+    if (CONFIG.musicFile && !fileBroken && audio) {
+      return !audio.paused && audio.error === null && !audio.ended;
+    }
+    return !!(ctx && ctx.state === 'running' && timer);
   }
 
   function stop() {
@@ -481,31 +500,66 @@ const Music = (() => {
     [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => pluck(f, i * 0.12, 0.2));
   }
 
-  return { toggle, jingle };
+  return { start, stop, toggle, jingle, isReallyPlaying };
 })();
 
 const musicBtn = $('music-btn');
 const musicIcon = $('music-icon');
 const musicLabel = $('music-label');
 
+function setMusicUI(on) {
+  musicBtn.classList.toggle('playing', on);
+  musicIcon.textContent = on ? '🔊' : '🎵';
+  musicLabel.textContent = on ? 'Stop' : 'Play our vibe';
+}
+
 musicBtn.addEventListener('click', () => {
   const result = Music.toggle();
   if (result === 'started') {
-    musicBtn.classList.add('playing');
-    musicIcon.textContent = '🔊';
-    musicLabel.textContent = 'Stop';
+    setMusicUI(true);
     toast('Musik diputar 🎶 (kecilin volume dulu ya 😅)');
   } else if (result === 'stopped') {
-    musicBtn.classList.remove('playing');
-    musicIcon.textContent = '🎵';
-    musicLabel.textContent = 'Play our vibe';
+    setMusicUI(false);
   } else {
-    musicBtn.classList.remove('playing');
-    musicIcon.textContent = '🎵';
-    musicLabel.textContent = 'Play our vibe';
+    setMusicUI(false);
     toast('Browser kamu nggak support musik 😢');
   }
 });
+
+/* ============ 14b. Autoplay best-effort + fallback gestur ============ */
+// Browser memblokir suara otomatis sebelum user berinteraksi.
+// Strategi: coba autoplay → kalau diblokir, nyalakan otomatis saat
+// user klik/tap/ketik pertama kali di mana pun.
+function startOnFirstGesture() {
+  const startOnce = (e) => {
+    // Kalau yang diklik justru tombol musik, biarkan tombol itu yang handle
+    if (e.target === musicBtn || musicBtn.contains(e.target)) return;
+    document.removeEventListener('pointerdown', startOnce);
+    document.removeEventListener('touchstart', startOnce);
+    document.removeEventListener('keydown', startOnce);
+    if (Music.isReallyPlaying()) return;
+    if (Music.start()) setMusicUI(true);
+  };
+  document.addEventListener('pointerdown', startOnce);
+  document.addEventListener('touchstart', startOnce);
+  document.addEventListener('keydown', startOnce);
+}
+
+function tryAutoplay() {
+  const started = Music.start();
+  if (!started) return;
+  setMusicUI(true);
+  // Verifikasi sebentar lagi: kalau browser menolak autoplay,
+  // turunkan UI dan tunggu gestur pertama user.
+  setTimeout(() => {
+    if (!Music.isReallyPlaying()) {
+      Music.stop();
+      setMusicUI(false);
+      startOnFirstGesture();
+      toast('Musik nggak bisa auto-play 😢 — klik di mana aja buat nyalain 🎵');
+    }
+  }, 800);
+}
 
 /* ===================== 15. Confetti (canvas, buatan sendiri) ===================== */
 const Confetti = (() => {
@@ -643,3 +697,4 @@ $('year').textContent = new Date().getFullYear();
 initParticles();
 initCursorSparkles();
 initReveal();
+tryAutoplay(); // musik diputar otomatis (best-effort, lihat 14b)
