@@ -1,0 +1,216 @@
+ <!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>buat kamu 💗</title>
+  <meta name="description" content="Sebuah website kecil-kecilan, dibuat khusus buat kamu. Jangan geer ya 😌">
+
+  <!-- Favicon emoji (tanpa file) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💗</text></svg>">
+
+  <!-- Font: Fredoka (judul, cute) + Quicksand (body, modern) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background particles (diisi oleh JS) -->
+  <div id="particles" aria-hidden="true"></div>
+
+  <!-- Canvas confetti -->
+  <canvas id="confetti" aria-hidden="true"></canvas>
+
+  <!-- ===== Topbar: musik + dark mode ===== -->
+  <header class="topbar">
+    <div class="topbar-brand" aria-hidden="true">💗 <span>buat kamu</span></div>
+    <div class="topbar-actions">
+      <button class="music-btn" id="music-btn" type="button" aria-label="Putar atau hentikan musik">
+        <span id="music-icon">🎵</span><span id="music-label">Play our vibe</span>
+      </button>
+      <button class="icon-btn" id="theme-btn" type="button" aria-label="Ganti tema terang/gelap">🌙</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- 1. GREETING -->
+    <section class="section hero" id="greeting">
+      <div class="wrap hero-inner">
+        <p class="hero-kicker reveal">sebuah website kecil-kecilan ✨</p>
+        <h1 class="hero-title reveal">Hei, kamu <span class="emoji-bounce">👀</span></h1>
+        <p class="hero-sub reveal" id="hero-sub">Aku bikin sesuatu kecil buat <strong>kamu</strong>...</p>
+        <button class="btn btn-primary btn-lg reveal" id="hero-btn" type="button">Klik kalau berani 😏</button>
+        <p class="hero-hint reveal">(serius, ini aman kok... mungkin)</p>
+      </div>
+    </section>
+
+    <!-- 2. INTERACTIVE SURPRISE -->
+    <section class="section" id="surprise">
+      <div class="wrap">
+        <p class="kicker reveal">interaksi pertama</p>
+        <h2 class="reveal">Sebelum lanjut...</h2>
+        <p class="sub reveal">Ada satu tombol di bawah ini. Aku udah warning ya.</p>
+        <button class="btn btn-ghost btn-lg reveal" id="naughty-btn" type="button">Jangan klik</button>
+        <p class="naughty-msg" id="naughty-msg" aria-live="polite"></p>
+        <p class="naughty-count" id="naughty-count"></p>
+      </div>
+    </section>
+
+    <!-- 3. ABOUT YOU -->
+    <section class="section" id="about">
+      <div class="wrap">
+        <p class="kicker reveal">sedikit tentang kamu</p>
+        <h2 class="reveal">Sedikit tentang kamu...</h2>
+        <p class="sub reveal">Berdasarkan pengamatan ilmiah yang sangat akurat.</p>
+        <div class="about-grid">
+          <div class="card about-card reveal"><span class="about-emoji">💗</span><p>Orangnya seru</p></div>
+          <div class="card about-card reveal"><span class="about-emoji">✨</span><p>Kadang random</p></div>
+          <div class="card about-card reveal"><span class="about-emoji">😂</span><p>Bisa bikin ketawa</p></div>
+          <div class="card about-card reveal"><span class="about-emoji">🌸</span><p>Punya vibes yang susah dijelaskan</p></div>
+          <div class="card about-card reveal"><span class="about-emoji">☕</span><p>Cocok diajak ngobrol</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. FUN FACTS -->
+    <section class="section" id="facts">
+      <div class="wrap">
+        <p class="kicker reveal">hasil riset rahasia</p>
+        <h2 class="reveal">Fun Facts Tentang Kamu</h2>
+        <p class="sub reveal">Klik kartunya kalau mau tahu hasilnya 👇</p>
+        <div class="facts-grid">
+          <button class="card fact-card reveal" type="button" data-pct="99">
+            <span class="fact-label">Level random</span>
+            <span class="fact-bar" aria-hidden="true"><span class="fact-fill"></span></span>
+            <span class="fact-val" aria-live="polite"></span>
+          </button>
+          <button class="card fact-card reveal" type="button" data-pct="90">
+            <span class="fact-label">Level bikin ketawa</span>
+            <span class="fact-bar" aria-hidden="true"><span class="fact-fill"></span></span>
+            <span class="fact-val" aria-live="polite"></span>
+          </button>
+          <button class="card fact-card reveal" type="button" data-pct="100">
+            <span class="fact-label">Level bikin bingung</span>
+            <span class="fact-bar" aria-hidden="true"><span class="fact-fill"></span></span>
+            <span class="fact-val" aria-live="polite"></span>
+          </button>
+          <button class="card fact-card fact-special reveal" type="button">
+            <span class="fact-label">Level manusia biasa</span>
+            <span class="fact-val" aria-live="polite">Error 404: Tidak ditemukan 😂</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. MINI GAME: TES KEBERUNTUNGAN -->
+    <section class="section" id="luck">
+      <div class="wrap">
+        <p class="kicker reveal">jangan terlalu serius</p>
+        <h2 class="reveal">Tes Keberuntungan Kamu 🎰</h2>
+        <p class="sub reveal">Ilmiah. Sangat ilmiah. 100% tidak asal.</p>
+        <div class="slot reveal">
+          <div class="slot-box" id="slot-box"><span class="slot-emoji" id="slot-emoji">🎲</span></div>
+          <p class="slot-result" id="slot-result" aria-live="polite">Tekan tombolnya untuk tahu nasibmu hari ini.</p>
+          <button class="btn btn-primary" id="luck-btn" type="button">COBA 🍀</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. GAME: PILIH SATU -->
+    <section class="section" id="choices">
+      <div class="wrap">
+        <p class="kicker reveal">kuis krusial</p>
+        <h2 class="reveal">Pilihan sulit...</h2>
+        <p class="sub reveal" id="choice-sub">Jawab dengan jujur. Ini menentukan masa depanmu.</p>
+        <div class="choice-progress reveal" id="choice-progress" aria-hidden="true"></div>
+        <p class="choice-q reveal" id="choice-q" aria-live="polite"></p>
+        <div class="choice-grid reveal" id="choice-grid"></div>
+        <p class="choice-fb" id="choice-fb" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <!-- 7. MEMORIES -->
+    <section class="section" id="memories">
+      <div class="wrap">
+        <p class="kicker reveal">kenang-kenangan</p>
+        <h2 class="reveal">Momen Bareng 📸</h2>
+        <p class="sub reveal">Tempat foto kalian nanti ya. Sekarang masih anget-angetnya placeholder.</p>
+        <div class="polaroid-grid">
+          <figure class="polaroid reveal">
+            <img class="polaroid-img polaroid-a" src="assets/images/foto-1.jpg" alt="Moment #01 — foto kami" loading="lazy">
+            <figcaption>Moment #01 💗</figcaption>
+          </figure>
+          <figure class="polaroid reveal">
+            <img class="polaroid-img polaroid-b" src="assets/images/foto-2.jpg" alt="Moment #02 — foto kami" loading="lazy">
+            <figcaption>Moment #02 ✨</figcaption>
+          </figure>
+          <figure class="polaroid reveal">
+            <img class="polaroid-img polaroid-c" src="assets/images/foto-3.jpg" alt="Moment #03 — foto kami" loading="lazy">
+            <figcaption>Moment #03 🌸</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. PESAN -->
+    <section class="section" id="message">
+      <div class="wrap">
+        <p class="kicker reveal">oke, sekarang serius</p>
+        <h2 class="reveal">Sedikit serius...</h2>
+        <div class="msg-card reveal">
+          <p>Di balik semua tombol random, animasi aneh, dan jokes nggak jelas ini...</p>
+          <p>Sebenernya aku cuma mau bilang...</p>
+          <p class="msg-big">Semoga kamu selalu punya alasan untuk tersenyum. 💗</p>
+          <p>Dan kalau hari ini lagi nggak baik-baik aja...</p>
+          <p class="msg-big">Semoga besok sedikit lebih baik.</p>
+          <p class="msg-end">That's it. Jangan geer 😌</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. FINAL SURPRISE -->
+    <section class="section" id="finale">
+      <div class="wrap">
+        <p class="kicker reveal">terakhir, janji</p>
+        <h2 class="reveal">Masih ada satu hal...</h2>
+        <p class="sub reveal">Ini tombol paling penting di seluruh website ini.</p>
+        <button class="btn btn-primary btn-xl reveal" id="finale-btn" type="button">Jangan klik tombol ini.</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Dibuat dengan 💗, banyak kopi, dan jokes nggak jelas — khusus buat kamu.</p>
+    <p class="footer-small">© <span id="year"></span> · website kecil-kecilan · no feelings detected 😌</p>
+  </footer>
+
+  <!-- Toast kecil -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Overlay final surprise -->
+  <div class="overlay" id="overlay" aria-hidden="true">
+    <div class="overlay-box" role="dialog" aria-modal="true" aria-labelledby="overlay-title">
+      <div class="loader" id="loader">
+        <span class="spinner" aria-hidden="true"></span>
+        <p id="overlay-text">Preparing surprise...</p>
+      </div>
+      <div class="overlay-done" id="overlay-done" hidden>
+        <h2 id="overlay-title">🎉 SURPRISE 🎉</h2>
+        <p>Sebenernya... semua ini cuma dibuat biar kamu senyum hari ini.<br>Makasih udah jadi temen yang seru, ya. 💗</p>
+        <button class="btn btn-primary" id="overlay-close" type="button">🥹 Oke, aku tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <noscript>
+    <p style="padding:1rem;text-align:center;font-family:sans-serif">
+      Hei, browser kamu nggak izinin JavaScript 😢. Aktifin dulu ya, biar kejutannya jalan.
+    </p>
+  </noscript>
+
+  <script src="script.js"></script>
+</body>
+</html>
