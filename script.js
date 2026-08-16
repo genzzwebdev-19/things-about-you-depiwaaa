@@ -6,7 +6,7 @@
 
 /* ===================== 1. KONFIGURASI ===================== */
 const CONFIG = {
-  friendName: '', // ← Ganti dengan nama temanmu, contoh: 'Dita'. Kosong = pakai "kamu"
+  friendName: 'dipa', // ← Ganti dengan nama temanmu, contoh: 'Dita'. Kosong = pakai "kamu"
   musicFile: 'assets/music/you-and-i.mp3', // ← lagu One Direction "You & I". Kosongkan ('') kalau mau pakai melodi bawaan
 };
 
